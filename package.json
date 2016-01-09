@@ -1,0 +1,27 @@
+{
+  "name": "wharf",
+  "version": "1.0.0",
+  "description": "Docker Manitoring Tool",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/davidcunha/wharf.git"
+  },
+  "author": "David Cunha <davidgoncalvescunha@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davidcunha/wharf/issues"
+  },
+  "homepage": "https://github.com/davidcunha/wharf#readme",
+  "dependencies": {
+    "express": "^4.13.3"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.11.3",
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}
