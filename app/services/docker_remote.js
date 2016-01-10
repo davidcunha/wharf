@@ -1,10 +1,11 @@
 var docker = require('docker-remote-api');
-var request = docker();
 
-var DockerRemote = function (opts) {};
+var DockerRemote = function (opts) {
+  this.request = docker();
+};
 
 DockerRemote.prototype.stats = function(containerID) {
-  request.get('/containers/'+ containerID +'/stats?stream=false', {json:true}, function(err, stats) {
+  this.request.get('/containers/'+ containerID +'/stats?stream=false', {json:true}, function(err, stats) {
     if (err) throw err;
     console.log('stats', JSON.stringify(stats));
   });

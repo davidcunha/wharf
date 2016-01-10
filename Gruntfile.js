@@ -3,10 +3,18 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha-test');
+  grunt.loadNpmTasks('grunt-express-server');
 
   grunt.initConfig({
+    express: {
+      dev: {
+        options: {
+          script: 'app.js'
+        }
+      }
+    },
     jshint: {
-      files: ['Gruntfile.js', 'app/**/*.js', 'tests/**/*.js'],
+      files: ['Gruntfile.js', 'app.js', 'app/**/*.js', 'config/**/*.js', 'tests/**/*.js'],
       options: {
         globals: {
           jQuery: true
@@ -14,8 +22,13 @@ module.exports = function(grunt) {
       }
     },
     watch: {
-      files: ['<%= jshint.files %>'],
-      tasks: ['jshint']
+      express: {
+        files:  ['<%= jshint.files %>'],
+        tasks:  ['express:dev', 'jshint'],
+        options: {
+          spawn: false // for grunt-contrib-watch v0.5.0+, "nospawn: true" for lower versions. Without this option specified express won't be reloaded
+        }
+      }
     },
     mochaTest: {
       test: {
@@ -30,5 +43,6 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('default', ['jshint', 'mochaTest']);
+  grunt.registerTask('default', ['mochaTest']);
+  grunt.registerTask('server', ['express:dev', 'jshint', 'watch']);
 };
