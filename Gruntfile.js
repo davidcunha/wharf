@@ -14,7 +14,7 @@ module.exports = function(grunt) {
       }
     },
     jshint: {
-      files: ['Gruntfile.js', 'app.js', 'app/**/*.js', 'config/**/*.js', 'tests/**/*.js'],
+      files: ['Gruntfile.js', 'app.js', 'app/**/*.js', 'config/**/*.js'],
       options: {
         globals: {
           jQuery: true
@@ -43,6 +43,6 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('default', ['mochaTest']);
-  grunt.registerTask('server', ['express:dev', 'jshint', 'watch']);
+  grunt.registerTask('default', ['express:dev', 'jshint', 'watch']);
+  grunt.registerTask('test', ['mochaTest']);
 };
