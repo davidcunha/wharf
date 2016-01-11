@@ -3,6 +3,11 @@ var DockerRemote = require(__services + 'docker_remote');
 
 describe('DockerRemote', function() {
   var containerID;
+  var dockerRemoteMock;
+
+  beforeEach(function() {
+    dockerRemoteMock = sinon.mock(DockerRemote);
+  });
 
   describe('.stats()', function() {
     beforeEach(function() {
@@ -10,22 +15,16 @@ describe('DockerRemote', function() {
     });
 
     it('returns stats from a container', function() {
-      var dockerRemoteMock = sinon.mock(DockerRemote);
       dockerRemoteMock.expects('stats').withArgs(containerID).once();
-
       DockerRemote.stats(containerID);
-
       dockerRemoteMock.verify();
     });
   });
 
   describe('.containers()', function() {
     it('returns list of containers', function() {
-      var dockerRemoteMock = sinon.mock(DockerRemote);
       dockerRemoteMock.expects('containers').once();
-
       DockerRemote.containers();
-
       dockerRemoteMock.verify();
     });
   });

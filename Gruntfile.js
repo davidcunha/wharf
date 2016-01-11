@@ -22,12 +22,20 @@ module.exports = function(grunt) {
       }
     },
     watch: {
+      gruntfile: {
+        files: 'Gruntfile.js',
+        tasks: ['jshint:gruntfile'],
+      },
       express: {
         files:  ['<%= jshint.files %>'],
         tasks:  ['express:dev', 'jshint'],
         options: {
           spawn: false // for grunt-contrib-watch v0.5.0+, "nospawn: true" for lower versions. Without this option specified express won't be reloaded
         }
+      },
+      test: {
+        files: 'tests/*/*.js',
+        tasks: ['test']
       }
     },
     mochaTest: {
