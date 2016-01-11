@@ -13,4 +13,13 @@ DockerRemote.stats = function(containerID) {
   return defer.promise;
 };
 
+DockerRemote.containers = function() {
+  var defer = Q.defer();
+  request.get('/containers/json', {json:true}, function(err, containers) {
+    if (err) defer.reject(err);
+    defer.resolve(containers);
+  });
+  return defer.promise;
+};
+
 module.exports = DockerRemote;
