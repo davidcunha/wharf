@@ -28,4 +28,12 @@ describe('DockerRemote', function() {
       dockerRemoteMock.verify();
     });
   });
+
+  describe('.processes()', function() {
+    it('returns list of processes', function() {
+      dockerRemoteMock.expects('processes').once();
+      DockerRemote.processes();
+      dockerRemoteMock.verify();
+    });
+  });
 });

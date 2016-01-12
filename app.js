@@ -10,14 +10,25 @@ app.get('/containers', function(req, res){
   });
 });
 
-app.get('/containers/:id/stats', function(req, res){
-  if(req.params.id === undefined || req.params.id === null) {
-    res.status(500).json({ error: 'container id missing' });
-  } else {
-    DockerRemote.stats(req.params.id).then(function(stats){
-      res.json(stats);
-    });
+app.param(function(req, res, next, val) {
+  if (val === undefined || val === null) {
+    next();
   }
+  else {
+    res.status(500).json({ error: 'container id missing' });
+  }
+});
+
+app.get('/containers/:id/stats', function(req, res){
+  DockerRemote.stats(req.params.id).then(function(stats){
+    res.json(stats);
+  });
+});
+
+app.get('/containers/:id/processes', function(req, res){
+  DockerRemote.processes(req.params.id).then(function(processes){
+    res.json(processes);
+  });
 });
 
 app.listen(3000);
