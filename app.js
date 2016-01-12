@@ -4,16 +4,20 @@ var express = require('express'),
   app = express(),
   DockerRemote = require(__services + 'docker_remote');
 
-app.get('/', function(req, res){
-  // DockerRemote.stats('999f3c428c18').then(function(stats){
-  //   console.log(stats);
-  // });
-
+app.get('/containers', function(req, res){
   DockerRemote.containers().then(function(containers){
-    console.log(containers);
+    res.json(containers);
   });
+});
 
-  res.send('hello world');
+app.get('/containers/:id/stats', function(req, res){
+  if(req.params.id === undefined || req.params.id === null) {
+    res.status(500).json({ error: 'container id missing' });
+  } else {
+    DockerRemote.stats(req.params.id).then(function(stats){
+      res.json(stats);
+    });
+  }
 });
 
 app.listen(3000);
