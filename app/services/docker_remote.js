@@ -31,4 +31,13 @@ DockerRemote.stats = function(containerID) {
   });
 };
 
+DockerRemote.info = function() {
+  return new Q.Promise(function(resolve, reject) {
+    request.get('/info', {json:true}, function(err, info) {
+      if (err) defer.reject(err);
+      resolve(info);
+    });
+  });
+};
+
 module.exports = DockerRemote;
