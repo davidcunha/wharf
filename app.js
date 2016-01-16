@@ -4,6 +4,12 @@ var express = require('express'),
   app = express(),
   DockerRemote = require(__services + 'docker_remote');
 
+app.get('/info', function(req, res){
+  DockerRemote.info().then(function(info){
+    res.json(info);
+  });
+});
+
 app.get('/containers', function(req, res){
   DockerRemote.containers().then(function(containers){
     res.json(containers);

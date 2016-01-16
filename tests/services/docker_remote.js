@@ -36,4 +36,12 @@ describe('DockerRemote', function() {
       dockerRemoteMock.verify();
     });
   });
+
+  describe('.info()', function() {
+    it('returns system info', function() {
+      dockerRemoteMock.expects('info').once();
+      DockerRemote.info();
+      dockerRemoteMock.verify();
+    });
+  });
 });
