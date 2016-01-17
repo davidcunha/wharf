@@ -2,12 +2,12 @@ var docker = require('docker-remote-api'),
   request = docker(),
   Q = require('q');
 
-var DockerRemote = function() {};
+function DockerRemote (){}
 
 DockerRemote.containers = function() {
   return new Q.Promise(function(resolve, reject) {
     request.get('/containers/json', {json:true}, function(err, containers) {
-      if (err) defer.reject(err);
+      if (err) reject(err);
       resolve(containers);
     });
   });
@@ -16,7 +16,7 @@ DockerRemote.containers = function() {
 DockerRemote.processes = function(containerID) {
   return new Q.Promise(function(resolve, reject) {
     request.get('/containers/'+ containerID +'/top', {json:true}, function(err, processes) {
-      if (err) defer.reject(err);
+      if (err) reject(err);
       resolve(processes);
     });
   });
@@ -25,7 +25,7 @@ DockerRemote.processes = function(containerID) {
 DockerRemote.stats = function(containerID) {
   return new Q.Promise(function(resolve, reject) {
     request.get('/containers/'+ containerID +'/stats?stream=false', {json:true}, function(err, stats) {
-      if (err) defer.reject(err);
+      if (err) reject(err);
       resolve(stats);
     });
   });
@@ -34,7 +34,7 @@ DockerRemote.stats = function(containerID) {
 DockerRemote.info = function() {
   return new Q.Promise(function(resolve, reject) {
     request.get('/info', {json:true}, function(err, info) {
-      if (err) defer.reject(err);
+      if (err) reject(err);
       resolve(info);
     });
   });
