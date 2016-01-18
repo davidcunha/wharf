@@ -1,5 +1,8 @@
-require('../tests');
-var DockerRemote = require(__services + 'docker_remote');
+'use strict';
+
+var DockerRemote = require('services/docker_remote')
+  , expect = require('chai').expect
+  , sinon = require('sinon');
 
 describe('DockerRemote', function() {
   var containerID;

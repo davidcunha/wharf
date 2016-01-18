@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -9,16 +11,17 @@ module.exports = function(grunt) {
     express: {
       dev: {
         options: {
-          script: 'app.js'
+          script: 'index.js'
         }
       }
     },
     jshint: {
-      files: ['Gruntfile.js', 'app.js', 'app/**/*.js', 'config/**/*.js'],
+      files: ['Gruntfile.js', 'index.js', 'lib/**/*.js', 'config/**/*.js'],
       options: {
         globals: {
           jQuery: true
-        }
+        },
+        jshintrc: true
       }
     },
     watch: {
@@ -34,7 +37,7 @@ module.exports = function(grunt) {
         }
       },
       test: {
-        files: 'tests/*/*.js',
+        files: 'test/*/*.js',
         tasks: ['test']
       }
     },
@@ -46,7 +49,7 @@ module.exports = function(grunt) {
           quiet: false, // Optionally suppress output to standard out (defaults to false)
           clearRequireCache: false // Optionally clear the require cache before running tests (defaults to false)
         },
-        src: ['tests/**/*.js']
+        src: ['test/**/*.js']
       }
     }
   });

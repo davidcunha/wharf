@@ -1,8 +1,9 @@
-require('./config/config');
+'use strict';
 
-var express = require('express'),
-  app = express(),
-  DockerRemote = require(__services + 'docker_remote');
+var express = require('express')
+  , app = express()
+  , Container = require('models/container')
+  , DockerRemote = require('services/docker_remote');
 
 app.get('/info', function(req, res){
   DockerRemote.info().then(function(info){
@@ -36,6 +37,20 @@ app.get('/containers/:id/processes', function(req, res){
     res.json(processes);
   });
 });
+
+
+
+
+var container = new Container();
+container.find({attr: 'container_name'}).then(function(container) {
+  console.log(container);
+  return container;
+}).catch(function(err){
+  console.log('ERROR ' + err);
+});
+
+
+
 
 app.listen(3000);
 console.log('Server listening on port 3000');

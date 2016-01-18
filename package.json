@@ -2,7 +2,11 @@
   "name": "wharf",
   "version": "1.0.0",
   "description": "Docker Manitoring Tool",
-  "main": "app.js",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_PATH=lib grunt",
+    "test": "NODE_PATH=lib grunt test"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/davidcunha/wharf.git"
@@ -16,7 +20,8 @@
   "dependencies": {
     "docker-remote-api": "^4.4.1",
     "express": "^4.13.3",
-    "q": "^1.4.1"
+    "q": "^1.4.1",
+    "sqlite3": "^3.1.1"
   },
   "devDependencies": {
     "chai": "^3.4.1",
