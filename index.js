@@ -17,15 +17,6 @@ app.get('/containers', function(req, res){
   });
 });
 
-app.param(function(req, res, next, val) {
-  if (val === undefined || val === null) {
-    next();
-  }
-  else {
-    res.status(500).json({ error: 'container id missing' });
-  }
-});
-
 app.get('/containers/:id/stats', function(req, res){
   DockerRemote.stats(req.params.id).then(function(stats){
     res.json(stats);

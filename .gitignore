@@ -28,6 +28,7 @@ node_modules
 
 # Tests
 results.txt
+coverage.html
 
 # Database
 db

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_PATH=lib grunt",
-    "test": "NODE_PATH=lib grunt test"
+    "test": "NODE_PATH=lib grunt test > ./test/coverage.html"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
     "sqlite3": "^3.1.1"
   },
   "devDependencies": {
+    "blanket": "^1.2.1",
     "chai": "^3.4.1",
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.11.3",
@@ -32,5 +33,11 @@
     "grunt-mocha-test": "^0.12.7",
     "mocha": "^2.3.4",
     "sinon": "^1.17.2"
+  },
+  "config": {
+    "blanket": {
+      "pattern": ["index.js","lib"],
+      "data-cover-never": ["node_modules","test","public","config"]
+    }
   }
 }

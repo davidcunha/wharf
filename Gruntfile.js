@@ -6,6 +6,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-express-server');
+  grunt.loadNpmTasks('grunt-mocha-cov');
 
   grunt.initConfig({
     express: {
@@ -51,9 +52,15 @@ module.exports = function(grunt) {
         },
         src: ['test/**/*.js']
       }
+    },
+    mochacov: {
+      options: {
+        reporter: 'html-cov'
+      },
+      all: ['test/**/*.js']
     }
   });
 
   grunt.registerTask('default', ['express:dev', 'jshint', 'watch']);
-  grunt.registerTask('test', ['mochaTest']);
+  grunt.registerTask('test', ['mochaTest', 'mochacov']);
 };
