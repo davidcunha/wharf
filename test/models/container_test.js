@@ -1,14 +1,14 @@
 'use strict';
 
-var Container = require('models/container')
+var ContainerFactory = require('models/container')
   , expect = require('chai').expect;
 
-describe('Container', function() {
+describe('ContainerFactory', function() {
   describe('#constructor', function() {
     var container;
 
     before(function() {
-      container = new Container();
+      container = ContainerFactory.getInstance();
     });
 
     it('instantiate a Container that inherits from SQliteAdapter', function() {
