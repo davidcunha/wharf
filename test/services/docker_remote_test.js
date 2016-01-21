@@ -1,8 +1,12 @@
 'use strict';
 
 var DockerRemote = require('services/docker_remote')
-  , expect = require('chai').expect
-  , sinon = require('sinon');
+  , chai = require('chai')
+  , expect = chai.expect
+  , sinon = require('sinon')
+  , chaiAsPromised = require("chai-as-promised");
+
+chai.use(chaiAsPromised);
 
 describe('DockerRemote', function() {
   var containerID;
@@ -29,6 +33,12 @@ describe('DockerRemote', function() {
       dockerRemoteMock.expects('containers').once();
       DockerRemote.containers();
       dockerRemoteMock.verify();
+    });
+  });
+
+  describe('.containersIDs()', function() {
+    it('returns list of containers IDs', function() {
+      return expect(DockerRemote.containersIDs()).to.be.fulfilled;
     });
   });
 
