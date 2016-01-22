@@ -1,7 +1,7 @@
 PRAGMA foreign_keys = 1;
 
-CREATE TABLE containers (id INTEGER PRIMARY KEY,
-                        container_name TEXT(255) NOT NULL);
+CREATE TABLE containers (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        container_name TEXT(255) NOT NULL UNIQUE);
 
 CREATE TABLE memory_stats (container_id INTEGER NOT NULL,
                 timestamp_day DATE NOT NULL,
