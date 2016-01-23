@@ -4,7 +4,7 @@ var DockerRemote = require('services/docker_remote')
   , chai = require('chai')
   , expect = chai.expect
   , sinon = require('sinon')
-  , chaiAsPromised = require("chai-as-promised");
+  , chaiAsPromised = require('chai-as-promised');
 
 chai.use(chaiAsPromised);
 

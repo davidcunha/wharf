@@ -1,10 +1,12 @@
 'use strict';
 
 var ContainerFactory = require('models/container')
+  , SQliteAdapter = require('services/sqlite_adapter')
   , chai = require('chai')
   , expect = chai.expect
-  , sinon = require('sinon')
-  , chaiAsPromised = require("chai-as-promised");
+  , chaiAsPromised = require('chai-as-promised');
+
+chai.use(chaiAsPromised);
 
 describe('ContainerFactory', function() {
   var container;
@@ -45,5 +47,27 @@ describe('ContainerFactory', function() {
     it('returns all containers', function() {
       return expect(container.findAll()).to.be.fulfilled;
     });
+  });
+
+  describe('#create()', function() {
+    it('returns that attributes are empty', function() {
+      return expect(function() {
+        container.create();
+      }).to.throw('attributes are empty');
+    });
+
+    it('returns that attributes are not valid', function() {
+      return expect(function() {
+        container.create({container: 'container_name'});
+      }).to.throw('attributes are not valid');
+    });
+  });
+
+  after(function() {
+    return new SQliteAdapter().deleteDB()
+      .then(null)
+      .catch(function(err) {
+        console.log(err.stack);
+      });
   });
 });
