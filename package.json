@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "Docker Manitoring Tool",
   "main": "index.js",
-  "scripts": {
-    "start": "NODE_PATH=lib grunt",
-    "test": "NODE_PATH=lib grunt test > ./test/coverage.html"
-  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/davidcunha/wharf.git"
@@ -30,6 +26,7 @@
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.11.3",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-exec": "^0.4.6",
     "grunt-express-server": "^0.5.1",
     "grunt-mocha-test": "^0.12.7",
     "mocha": "^2.3.4",
