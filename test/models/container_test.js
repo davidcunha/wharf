@@ -26,40 +26,32 @@ describe('ContainerFactory', function() {
   });
 
   describe('#find()', function() {
-    it('returns that attributes are empty', function() {
-      return expect(function() {
-        container.find();
-      }).to.throw('attributes are empty');
-    });
-
-    it('returns that attributes are not valid', function() {
-      return expect(function() {
-        container.find({container: 'container_name'});
-      }).to.throw('attributes are not valid');
-    });
-
     it('returns a container', function() {
-      return expect(container.find({container_name: 'container_name'})).to.be.fulfilled;
+      return expect(container.find({container_name: 'container_name'})).to.eventually.be.fulfilled;
     });
   });
 
   describe('#findAll()', function() {
     it('returns all containers', function() {
-      return expect(container.findAll()).to.be.fulfilled;
+      return expect(container.findAll()).to.eventually.be.fulfilled;
+    });
+  });
+
+  describe('#updateContainersList()', function() {
+    var containersIDsFromDocker;
+
+    before(function() {
+      containersIDsFromDocker = ['999f3c428c18', '111f3c428c18'];
+    });
+
+    it('updates existing containers', function() {
+      return expect(container.updateContainersList(containersIDsFromDocker)).to.eventually.fulfilled;
     });
   });
 
   describe('#create()', function() {
-    it('returns that attributes are empty', function() {
-      return expect(function() {
-        container.create();
-      }).to.throw('attributes are empty');
-    });
-
-    it('returns that attributes are not valid', function() {
-      return expect(function() {
-        container.create({container: 'container_name'});
-      }).to.throw('attributes are not valid');
+    it('creates a new container', function() {
+      return expect(container.create({container_name: 'container_name'})).to.eventually.fulfilled;
     });
   });
 

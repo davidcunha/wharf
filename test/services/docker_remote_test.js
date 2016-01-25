@@ -17,7 +17,7 @@ describe('DockerRemote', function() {
   });
 
   describe('.stats()', function() {
-    beforeEach(function() {
+    before(function() {
       containerID = '999f3c428c18';
     });
 
@@ -38,7 +38,7 @@ describe('DockerRemote', function() {
 
   describe('.containersIDs()', function() {
     it('returns list of containers IDs', function() {
-      return expect(DockerRemote.containersIDs()).to.be.fulfilled;
+      return expect(DockerRemote.containersIDs()).to.eventually.be.fulfilled;
     });
   });
 
