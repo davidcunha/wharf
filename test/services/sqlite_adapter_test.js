@@ -9,26 +9,28 @@ describe('SQliteAdapter', function() {
 
   before(function() {
     sqliteAdapter = new SQliteAdapter();
+    sqliteAdapter.schemaAttrs = ['id', 'container_name'];
   });
 
   describe('#validateAttrs', function() {
     it('returns validation for attributes used for query', function() {
-      sqliteAdapter.schemaAttrs = ['id', 'container_name'];
       expect(sqliteAdapter.validateAttrs.apply(sqliteAdapter, [{id: 'id', container_name: 'container_name'}])).to.be.ok;
     });
 
-    it('returns that attributes are not valid', function() {
-      sqliteAdapter.schemaAttrs = ['id', 'container_name'];
-      expect(function() {
-        sqliteAdapter.validateAttrs.apply(sqliteAdapter, [{id: 'id', container: 'container'}]);
-      }).to.throw('attributes are not valid');
+    it('returns validation for attributes used for projection', function() {
+      expect(sqliteAdapter.validateAttrs.apply(sqliteAdapter, [null, ['container_name']])).to.be.ok;
     });
 
-    it('returns that attributes are empty', function() {
-      sqliteAdapter.schemaAttrs = ['id', 'container_name'];
-      expect(function() {
-        sqliteAdapter.validateAttrs.apply(sqliteAdapter, [{}]);
-      }).to.throw('attributes are empty');
+    it('returns validation for attributes used for all query', function() {
+      expect(sqliteAdapter.validateAttrs.apply(sqliteAdapter, [{id: 'id', container_name: 'container_name'}, ['container_name']])).to.be.ok;
+    });
+
+    it('returns that attributes are not valid', function() {
+      expect(sqliteAdapter.validateAttrs.apply(sqliteAdapter, [{id: 'id', container: 'container'}])).to.be.false;
+    });
+
+    it('returns that attributes are not valid', function() {
+      expect(sqliteAdapter.validateAttrs.apply(sqliteAdapter, [{}])).to.be.false;
     });
   });
 });
