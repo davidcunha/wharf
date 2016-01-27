@@ -55,6 +55,11 @@ describe('ContainerFactory', function() {
     });
   });
 
+  describe('#createBulk()', function() {
+    // pending test
+    it('creates bulk of containers');
+  });
+
   after(function() {
     return new SQliteAdapter().deleteDB()
       .then(null)
