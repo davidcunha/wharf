@@ -1,6 +1,6 @@
 'use strict';
 
-var ContainerFactory = require('models/container')
+var Container = require('models/container')
   , SQliteAdapter = require('services/sqlite_adapter')
   , chai = require('chai')
   , expect = chai.expect
@@ -8,11 +8,11 @@ var ContainerFactory = require('models/container')
 
 chai.use(chaiAsPromised);
 
-describe('ContainerFactory', function() {
+describe('Container', function() {
   var container;
 
   before(function() {
-    container = ContainerFactory.getInstance();
+    container = new Container();
   });
 
   describe('#constructor', function() {
