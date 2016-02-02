@@ -45,4 +45,21 @@ describe('WorkerMapper', function() {
       });
     });
   });
+
+  describe('.findAll()', function() {
+    before(function() {
+      WorkerMapper.create(sinon.stub({
+        id: 2,
+        entity_name: 'entity',
+        type: 'memory',
+        process: {}
+      }));
+    });
+
+    context('list of workers has workers', function() {
+      it('finds workers', function() {
+        expect(WorkerMapper.findAll()).to.have.length(2);
+      });
+    });
+  });
 });
