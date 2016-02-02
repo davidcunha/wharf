@@ -1,6 +1,6 @@
 'use strict';
 
-var MemoryStatsFactory = require('models/memory_stats')
+var MemoryStats = require('models/memory_stats')
   , SQliteAdapter = require('services/sqlite_adapter')
   , chai = require('chai')
   , expect = chai.expect
@@ -8,11 +8,11 @@ var MemoryStatsFactory = require('models/memory_stats')
 
 chai.use(chaiAsPromised);
 
-describe('MemoryStatsFactory', function() {
+describe('MemoryStats', function() {
   var memoryStats;
 
   before(function() {
-    memoryStats = MemoryStatsFactory.getInstance();
+    memoryStats = new MemoryStats();
   });
 
   describe('#constructor', function() {
