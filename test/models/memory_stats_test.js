@@ -17,7 +17,7 @@ describe('MemoryStats', function() {
 
   describe('#constructor', function() {
     it('returns an instantiated memory stats and its schema attributes', function() {
-      expect(memoryStats.schemaAttrs).to.include.members(['id', 'container_id', 'timestamp_day']);
+      expect(memoryStats.schemaAttrs).to.include.members(['container_name', 'timestamp_day']);
     });
 
     it('returns an instantiated memory stats and its table name', function() {

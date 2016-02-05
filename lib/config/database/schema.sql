@@ -1,10 +1,9 @@
 PRAGMA foreign_keys = 1;
 
-CREATE TABLE containers (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        container_name TEXT(255) NOT NULL UNIQUE);
+CREATE TABLE containers (container_name TEXT(255) NOT NULL UNIQUE);
 
-CREATE TABLE memory_stats (container_id INTEGER NOT NULL,
-                timestamp_day DATE NOT NULL,
+CREATE TABLE memory_stats (container_name TEXT(255) NOT NULL,
+                timestamp_day DATE DEFAULT CURRENT_DATE,
                 hour_0 TEXT DEFAULT "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
                 hour_1 TEXT DEFAULT "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
                 hour_2 TEXT DEFAULT "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
@@ -29,5 +28,5 @@ CREATE TABLE memory_stats (container_id INTEGER NOT NULL,
                 hour_21 TEXT DEFAULT "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
                 hour_22 TEXT DEFAULT "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
                 hour_23 TEXT DEFAULT "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
-                PRIMARY KEY(container_id, timestamp_day),
-                FOREIGN KEY(container_id) REFERENCES containers(id) ON DELETE CASCADE);
+                UNIQUE(container_name, timestamp_day) ON CONFLICT ROLLBACK,
+                FOREIGN KEY(container_name) REFERENCES containers(container_name) ON DELETE CASCADE);

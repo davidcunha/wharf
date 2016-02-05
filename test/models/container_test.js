@@ -17,7 +17,7 @@ describe('Container', function() {
 
   describe('#constructor', function() {
     it('returns an instantiated container and its schema attributes', function() {
-      expect(container.schemaAttrs).to.eql(['id', 'container_name']);
+      expect(container.schemaAttrs).to.eql(['container_name']);
     });
 
     it('returns an instantiated container and its table name', function() {
