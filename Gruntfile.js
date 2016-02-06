@@ -59,13 +59,13 @@ module.exports = function(grunt) {
 
   grunt.registerTask('env:dev', 'Load Dev Environment', function() {
     process.env.NODE_PATH = 'lib';
-    process.env.APP_ENV   = 'development';
+    process.env.APP_ENV = 'development';
     grunt.log.writeln('Loading Development environment...');
   });
 
   grunt.registerTask('env:test', 'Load Test Environment', function() {
     process.env.NODE_PATH = 'lib';
-    process.env.APP_ENV   = 'test';
+    process.env.APP_ENV = 'test';
     grunt.log.writeln('Loading Test environment...');
   });
 
