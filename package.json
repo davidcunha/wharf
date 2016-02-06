@@ -17,7 +17,8 @@
     "docker-remote-api": "^4.4.1",
     "express": "^4.13.3",
     "q": "^1.4.1",
-    "sqlite3": "^3.1.1"
+    "sqlite3": "^3.1.1",
+    "winston": "^2.1.1"
   },
   "devDependencies": {
     "blanket": "^1.2.1",
