@@ -1,7 +1,7 @@
 'use strict';
 
 var MemoryStats = require('models/memory_stats')
-  , SQliteAdapter = require('services/sqlite_adapter')
+  , SQliteAdapter = require('models/sqlite_adapter')
   , chai = require('chai')
   , expect = chai.expect
   , chaiAsPromised = require('chai-as-promised');
@@ -9,24 +9,18 @@ var MemoryStats = require('models/memory_stats')
 chai.use(chaiAsPromised);
 
 describe('MemoryStats', function() {
-  var memoryStats;
-
-  before(function() {
-    memoryStats = new MemoryStats();
-  });
-
-  describe('#constructor', function() {
+  describe('.constructor', function() {
     it('returns an instantiated memory stats and its schema attributes', function() {
-      expect(memoryStats.schemaAttrs).to.include.members(['container_name', 'timestamp_day']);
+      expect(MemoryStats().schemaAttrs).to.include.members(['container_name', 'timestamp_day']);
     });
 
     it('returns an instantiated memory stats and its table name', function() {
-      expect(memoryStats.tableName).to.eql('memory_stats');
+      expect(MemoryStats().tableName).to.eql('memory_stats');
     });
   });
 
   after(function() {
-    return new SQliteAdapter().deleteDB()
+    return SQliteAdapter.deleteDB()
       .then(null)
       .catch(function(err) {
         console.log(err.stack);
