@@ -1,16 +1,16 @@
 'use strict';
 
-var WorkerMapper = require('services/worker_mapper').getInstance()
+var StatsWorkerMapper = require('models/stats_worker_mapper')
   , chai = require('chai')
   , sinon = require('sinon')
   , expect = chai.expect;
 
-describe('WorkerMapper', function() {
-  var workerStubs = [];
+describe('StatsWorkerMapper', function() {
+  var statsWorkerStubs = [];
 
   before(function() {
     for(var i = 1; i <= 3; i++) {
-      workerStubs.push(sinon.stub({
+      statsWorkerStubs.push(sinon.stub({
         id: i,
         entity_name: 'entity',
         type: 'memory',
@@ -23,46 +23,46 @@ describe('WorkerMapper', function() {
   describe('.find()', function() {
     context('list of workers is empty', function() {
       it('does not find any worker', function() {
-        expect(WorkerMapper.find(workerStubs[0])).to.not.be.ok;
+        expect(StatsWorkerMapper.find(statsWorkerStubs[0])).to.not.be.ok;
       });
     });
 
     context('list of workers has workers', function() {
       before(function() {
-        WorkerMapper.create(workerStubs[0]);
+        StatsWorkerMapper.create(statsWorkerStubs[0]);
       });
 
       it('finds a worker by its ID', function() {
-        expect(WorkerMapper.find(workerStubs[0])).to.be.ok;
+        expect(StatsWorkerMapper.find(statsWorkerStubs[0])).to.be.ok;
       });
 
       it('does not find a worker', function() {
-        expect(WorkerMapper.find(workerStubs[1])).to.not.be.ok;
+        expect(StatsWorkerMapper.find(statsWorkerStubs[1])).to.not.be.ok;
       });
     });
   });
 
   describe('.findAll()', function() {
     before(function() {
-      WorkerMapper.create(workerStubs[1]);
+      StatsWorkerMapper.create(statsWorkerStubs[1]);
     });
 
     context('list of workers has workers', function() {
       it('finds workers', function() {
-        expect(WorkerMapper.findAll()).to.have.length(2);
+        expect(StatsWorkerMapper.findAll()).to.have.length(2);
       });
     });
   });
 
   describe('.destroy()', function() {
     before(function() {
-      WorkerMapper.create(workerStubs[2]);
+      StatsWorkerMapper.create(statsWorkerStubs[2]);
     });
 
     context('list of workers has workers', function() {
       it('destroys a worker', function() {
-        expect(WorkerMapper.destroy({id: workerStubs[2].id})).to.be.true;
-        expect(WorkerMapper.findAll()).to.have.length(2);
+        expect(StatsWorkerMapper.destroy({id: statsWorkerStubs[2].id})).to.be.true;
+        expect(StatsWorkerMapper.findAll()).to.have.length(2);
       });
     });
   });
