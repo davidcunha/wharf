@@ -49,6 +49,12 @@ describe('Container', function() {
     });
   });
 
+  describe('.update()', function() {
+    it('updates a existing container', function() {
+      return expect(Container().update({container_name: 'container_name'}, {container_name: 'container_name_updated'})).to.eventually.be.fulfilled;
+    });
+  });
+
   after(function() {
     return SQliteAdapter.deleteDB()
       .then(null)
