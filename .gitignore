@@ -31,3 +31,6 @@ coverage.html
 
 # Database
 db
+
+# minified assets
+lib/public/assets/*

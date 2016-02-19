@@ -7,6 +7,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-express-server');
   grunt.loadNpmTasks('grunt-mocha-cov');
   grunt.loadNpmTasks('grunt-exec');
+  grunt.loadNpmTasks('grunt-sass');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-browserify');
 
   grunt.initConfig({
     express: {
@@ -19,7 +23,8 @@ module.exports = function(grunt) {
     jshint: {
       files: ['Gruntfile.js', 'index.js', 'lib/**/*.js', 'config/**/*.js'],
       options: {
-        jshintrc: true
+        jshintrc: true,
+        ignores: ['lib/public/assets/*.js']
       }
     },
     watch: {
@@ -31,8 +36,59 @@ module.exports = function(grunt) {
         }
       },
       test: {
-        files: 'test/*/*.js',
+        files: 'test/**/*.js',
         tasks: ['test']
+      },
+      css: {
+        files: 'lib/public/css/**/*.scss',
+        tasks: ['sass', 'cssmin']
+      },
+      js: {
+        files: 'lib/public/js/**/*.js',
+        tasks: ['browserify', 'uglify:my_target']
+      }
+    },
+    browserify: {
+      main: {
+        browserifyOptions: {
+          bundleOptions: {
+            debug: true
+          }
+        },
+        src: 'lib/public/js/wharf.js',
+        dest: 'lib/public/assets/wharf.js'
+      }
+    },
+    uglify: {
+      my_target: {
+        options: {
+          sourceMap: true,
+          sourceMapName: 'lib/public/assets/wharf.min.js.map',
+          mangle: false
+        },
+        files: {
+          'lib/public/assets/wharf.min.js': 'lib/public/assets/wharf.js'
+        }
+      }
+    },
+    sass: {
+      options: {
+        sourceMap: true
+      },
+      dist: {
+        files: {
+          'lib/public/assets/wharf.css': 'lib/public/css/wharf.scss'
+        }
+      }
+    },
+    cssmin: {
+      options: {
+        sourceMap: true
+      },
+      target: {
+        files: {
+          'lib/public/assets/wharf.min.css': 'lib/public/assets/wharf.css'
+        }
       }
     },
     mochaTest: {
