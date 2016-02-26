@@ -1,6 +1,8 @@
 PRAGMA foreign_keys = 1;
 
-CREATE TABLE containers (container_name TEXT(255) NOT NULL UNIQUE);
+CREATE TABLE containers (container_name TEXT(255) NOT NULL UNIQUE,
+                      container_image TEXT(255) NOT NULL,
+                      container_alias TEXt(255) NOT NULL);
 
 CREATE TABLE memory_stats (container_name TEXT(255) NOT NULL,
                 timestamp_day DATE DEFAULT CURRENT_DATE,
