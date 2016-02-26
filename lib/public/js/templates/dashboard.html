@@ -1,4 +1,10 @@
-<h1>{{dashboard}}</h1>
+<div id="page-wrapper">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Dashboard</h1>
 
-<div ui-view="filters"></div>
-<div ui-view="chart"></div>
+      <section ui-view="filters"></section>
+      <section ui-view="chart"></section>
+    </div>
+  </div>
+</div>

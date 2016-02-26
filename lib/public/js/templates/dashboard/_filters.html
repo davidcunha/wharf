@@ -1,1 +1,4 @@
-<h2>{{filters}}</h2>
+<select class="form-control" name="containers"
+  ng-model="selectedContainer"
+  ng-options="container as container.container_alias for container in containers track by container.container_name">
+</select>
