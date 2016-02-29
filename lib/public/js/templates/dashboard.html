@@ -4,7 +4,9 @@
       <h1 class="page-header">Dashboard</h1>
 
       <section ui-view="filters"></section>
-      <section ui-view="chart"></section>
+      <section ui-view="chart" data-type="memory"></section>
+      <section ui-view="chart" data-type="cpu"></section>
+      <section ui-view="chart" data-type="network"></section>
     </div>
   </div>
 </div>
