@@ -11,8 +11,21 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-notify');
 
   grunt.initConfig({
+    notify: {
+      server: {
+        options: {
+          message: 'Server ready!'
+        }
+      },
+      test: {
+        options: {
+          message: 'Test suite executed!'
+        }
+      }
+    },
     express: {
       dev: {
         options: {
@@ -30,18 +43,18 @@ module.exports = function(grunt) {
     watch: {
       express: {
         files:  ['<%= jshint.files %>'],
-        tasks:  ['express:dev', 'jshint'],
+        tasks:  ['express:dev', 'jshint', 'notify:server'],
         options: {
           spawn: false
         }
       },
       test: {
         files: 'test/**/*.js',
-        tasks: ['test']
+        tasks: ['test', 'notify:test']
       },
       css: {
         files: 'lib/public/css/**/*.scss',
-        tasks: ['sass', 'cssmin']
+        tasks: ['sass', 'cssmin', 'notify:server']
       },
       js: {
         files: 'lib/public/js/**/*.js',
@@ -126,5 +139,5 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('default', ['env:dev', 'express:dev', 'jshint', 'watch']);
-  grunt.registerTask('test', ['env:test', 'mochaTest']);
+  grunt.registerTask('test', ['env:test', 'mochaTest', 'notify:test']);
 };
