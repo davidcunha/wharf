@@ -5,8 +5,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-express-server');
-  grunt.loadNpmTasks('grunt-mocha-cov');
-  grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -111,17 +109,6 @@ module.exports = function(grunt) {
           clearRequireCache: true
         },
         src: ['test/**/*.js']
-      }
-    },
-    mochacov: {
-      options: {
-        reporter: 'html-cov'
-      },
-      all: ['test/**/*.js']
-    },
-    exec: {
-      coverage: {
-        cmd: 'grunt mochacov > ./test/coverage.html'
       }
     }
   });
