@@ -10,8 +10,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-notify');
+  grunt.loadNpmTasks('grunt-exec');
 
   grunt.initConfig({
+    exec: {
+      electron: {
+        cmd: 'electron index.js & grunt jshint & grunt watch'
+      }
+    },
     notify: {
       server: {
         options: {
@@ -114,17 +120,15 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('env:dev', 'Load Dev Environment', function() {
-    process.env.NODE_PATH = 'lib';
     process.env.APP_ENV = 'development';
     grunt.log.writeln('Loading Development environment...');
   });
 
   grunt.registerTask('env:test', 'Load Test Environment', function() {
-    process.env.NODE_PATH = 'lib';
     process.env.APP_ENV = 'test';
     grunt.log.writeln('Loading Test environment...');
   });
 
-  grunt.registerTask('default', ['env:dev', 'express:dev', 'jshint', 'watch']);
+  grunt.registerTask('default', ['env:dev', 'express:dev', 'exec:electron']);
   grunt.registerTask('test', ['env:test', 'mochaTest', 'notify:test']);
 };
