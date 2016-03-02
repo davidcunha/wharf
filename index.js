@@ -24,19 +24,20 @@ app.on('ready', function() {
   mainWindow.setMenu(null);
 
   // Load application
-  require('./lib/wharf');
+  require('./src/wharf');
 
   // and load the index.html of the app.
-  mainWindow.loadURL('file://' + __dirname + '/lib/public/index.html');
+  mainWindow.loadURL('file://' + __dirname + '/src/public/index.html');
 
-  if(process.env.APP_ENV === 'development')
+  if(process.env.APP_ENV === 'development') {
     mainWindow.openDevTools();
+  }
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
-      // Dereference the window object, usually you would store windows
-      // in an array if your app supports multi windows, this is the time
-      // when you should delete the corresponding element.
-      mainWindow = null;
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    mainWindow = null;
   });
 });

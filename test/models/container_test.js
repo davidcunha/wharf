@@ -1,7 +1,7 @@
 'use strict';
 
-var Container = require('../../lib/models/container')
-  , SQliteAdapter = require('../../lib/models/sqlite_adapter')
+var Container = require('../../src/models/container')
+  , SQliteAdapter = require('../../src/models/sqlite_adapter')
   , chai = require('chai')
   , expect = chai.expect
   , chaiAsPromised = require('chai-as-promised');

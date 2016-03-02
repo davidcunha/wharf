@@ -1,6 +1,6 @@
 'use strict';
 
-var StatsWorkerMapper = require('../../lib/models/stats_worker_mapper')
+var StatsWorkerMapper = require('../../src/models/stats_worker_mapper')
   , chai = require('chai')
   , sinon = require('sinon')
   , expect = chai.expect;

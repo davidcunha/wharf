@@ -1,6 +1,6 @@
 'use strict';
 
-var StatsWorker = require('../../lib/models/stats_worker')
+var StatsWorker = require('../../src/models/stats_worker')
   , chai = require('chai')
   , expect = chai.expect;
 

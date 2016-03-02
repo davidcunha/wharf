@@ -1,6 +1,6 @@
 'use strict';
 
-var DockerRemote = require('../../lib/services/docker_remote')
+var DockerRemote = require('../../src/services/docker_remote')
   , chai = require('chai')
   , expect = chai.expect
   , sinon = require('sinon')

@@ -19,7 +19,7 @@ var Config = {
   database: 'development',
   workerInterval: 10000,
   logger: logger,
-  schema: fs.readFileSync('lib/config/database/schema.sql', 'utf8')
+  schema: fs.readFileSync('src/config/database/schema.sql', 'utf8')
 };
 
 module.exports = Config;
