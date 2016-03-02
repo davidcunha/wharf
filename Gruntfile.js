@@ -15,7 +15,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     exec: {
       electron: {
-        cmd: 'electron index.js & grunt jshint & grunt watch'
+        cmd: 'electron index.js & grunt watch'
       }
     },
     notify: {
@@ -38,10 +38,10 @@ module.exports = function(grunt) {
       }
     },
     jshint: {
-      files: ['Gruntfile.js', 'index.js', 'lib/**/*.js', 'config/**/*.js'],
+      files: ['Gruntfile.js', 'index.js', './src/**/*.js'],
       options: {
         jshintrc: true,
-        ignores: ['lib/public/assets/*.js']
+        ignores: ['./src/public/assets/*.js']
       }
     },
     watch: {
@@ -53,15 +53,15 @@ module.exports = function(grunt) {
         }
       },
       test: {
-        files: 'test/**/*.js',
+        files: './test/**/*.js',
         tasks: ['test', 'notify:test']
       },
       css: {
-        files: 'lib/public/css/**/*.scss',
+        files: './src/public/css/**/*.scss',
         tasks: ['sass', 'cssmin', 'notify:server']
       },
       js: {
-        files: 'lib/public/js/**/*.js',
+        files: './src/public/js/**/*.js',
         tasks: ['browserify', 'uglify:my_target']
       }
     },
@@ -72,19 +72,19 @@ module.exports = function(grunt) {
             debug: true
           }
         },
-        src: 'lib/public/js/wharf.js',
-        dest: 'lib/public/assets/wharf.js'
+        src: './src/public/js/wharf.js',
+        dest: './src/public/assets/wharf.js'
       }
     },
     uglify: {
       my_target: {
         options: {
           sourceMap: true,
-          sourceMapName: 'lib/public/assets/wharf.min.js.map',
+          sourceMapName: './src/public/assets/wharf.min.js.map',
           mangle: false
         },
         files: {
-          'lib/public/assets/wharf.min.js': 'lib/public/assets/wharf.js'
+          './src/public/assets/wharf.min.js': './src/public/assets/wharf.js'
         }
       }
     },
@@ -94,7 +94,7 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'lib/public/assets/wharf.css': 'lib/public/css/wharf.scss'
+          './src/public/assets/wharf.css': './src/public/css/wharf.scss'
         }
       }
     },
@@ -104,7 +104,7 @@ module.exports = function(grunt) {
       },
       target: {
         files: {
-          'lib/public/assets/wharf.min.css': 'lib/public/assets/wharf.css'
+          './src/public/assets/wharf.min.css': './src/public/assets/wharf.css'
         }
       }
     },
@@ -114,21 +114,21 @@ module.exports = function(grunt) {
           reporter: 'spec',
           clearRequireCache: true
         },
-        src: ['test/**/*.js']
+        src: ['./test/**/*.js']
       }
     }
   });
 
   grunt.registerTask('env:dev', 'Load Dev Environment', function() {
-    process.env.APP_ENV = 'development';
     grunt.log.writeln('Loading Development environment...');
+    process.env.APP_ENV = 'development';
   });
 
   grunt.registerTask('env:test', 'Load Test Environment', function() {
-    process.env.APP_ENV = 'test';
     grunt.log.writeln('Loading Test environment...');
+    process.env.APP_ENV = 'test';
   });
 
-  grunt.registerTask('default', ['env:dev', 'express:dev', 'exec:electron']);
+  grunt.registerTask('default', ['env:dev', 'express:dev', 'jshint', 'exec:electron']);
   grunt.registerTask('test', ['env:test', 'mochaTest', 'notify:test']);
 };
