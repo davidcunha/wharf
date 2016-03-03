@@ -10,7 +10,11 @@ function MemoryStats() {
     prePopulateTimestampForDay(schemaAttrs, i);
   }
 
-  var memoryStats = SQliteAdapter({tableName: 'memory_stats', schemaAttrs: schemaAttrs});
+  var memoryStats = SQliteAdapter({modelName: 'MemoryStats',
+                                  tableName: 'memory_stats',
+                                  schemaAttrs: schemaAttrs,
+                                  associations: {belongsTo: 'containers'}});
+
   return memoryStats;
 }
 

@@ -9,12 +9,15 @@ var sqlite3 = require('sqlite3').verbose()
 
 function SQliteAdapter(options) {
   options = options || {};
+  if(!options.modelName) { throw new Error('\'modelName\' is undefined'); }
   if(!options.tableName) { throw new Error('\'tableName\' is undefined'); }
   if(!options.schemaAttrs) { throw new Error('\'schemaAttrs\' is undefined'); }
 
   return {
+    modelName: options.modelName,
     tableName: options.tableName,
     schemaAttrs: options.schemaAttrs,
+    associations: options.associations,
     create: create,
     destroy: destroy,
     find: find,

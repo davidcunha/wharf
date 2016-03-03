@@ -6,8 +6,11 @@ var SQliteAdapter = require('./sqlite_adapter')
   , appConfig = require('../config/application');
 
 function Container() {
-  var container = SQliteAdapter({tableName: 'containers',
-                                schemaAttrs: ['container_name', 'container_image', 'container_alias']});
+  var container = SQliteAdapter({modelName: 'Container',
+                                tableName: 'containers',
+                                schemaAttrs: ['container_name', 'container_image', 'container_alias'],
+                                associations: {hasMany: 'memory_stats'}});
+
   container.updateContainersList = updateContainersList;
   return container;
 }
