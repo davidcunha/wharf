@@ -13,20 +13,18 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-exec');
 
   grunt.initConfig({
-    exec: {
-      electron: {
-        cmd: 'electron index.js & grunt watch'
-      }
-    },
     notify: {
       server: {
         options: {
-          message: 'Server ready!'
+          message: 'App ready!'
         }
-      },
-      test: {
-        options: {
-          message: 'Test suite executed!'
+      }
+    },
+    exec: {
+      app: {
+        cmd: function() {
+          process.env.MODE = 'desktop';
+          return 'electron index.js & grunt watch';
         }
       }
     },
@@ -129,6 +127,7 @@ module.exports = function(grunt) {
     process.env.APP_ENV = 'test';
   });
 
-  grunt.registerTask('default', ['env:dev', 'express:dev', 'jshint', 'exec:electron']);
+  grunt.registerTask('default', ['env:dev', 'express:dev', 'jshint', 'watch']);
+  grunt.registerTask('desktop', ['env:dev', 'express:dev', 'exec:app']);
   grunt.registerTask('test', ['env:test', 'mochaTest', 'notify:test']);
 };
