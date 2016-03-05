@@ -27,7 +27,9 @@ function ChartDirective() {
       scope.$watch('type', function() {
         var dataSource = scope.dataSource();
         var ctx = chartElement.getContext('2d');
-        lineChart = new ChartJs(ctx).Line(dataSource);
+        lineChart = new ChartJs(ctx).Line(dataSource, {
+          responsive: true
+        });
       });
 
       scope.$on('$destroy', function() {
