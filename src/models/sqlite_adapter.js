@@ -26,50 +26,70 @@ function SQliteAdapter(options) {
   };
 }
 
-var create = function create(attrs) {
-  attrs = attrs || {};
+var create = function create(insertionAttrs) {
+  insertionAttrs = insertionAttrs || {};
 
-  validateAttrs.call(this, [attrs]);
+  validateAttrs.call(this, [insertionAttrs]);
 
-  var insertionAttrs = insertion(attrs);
+  insertionAttrs = insertion(insertionAttrs);
   return exec('INSERT INTO ' + this.tableName + ' ' + insertionAttrs).then(function(res) {
     return res;
   });
 };
 
-var destroy = function(attrs) {
-  attrs = attrs || {};
+var destroy = function(selectionAttrs) {
+  selectionAttrs = selectionAttrs || {};
 
-  validateAttrs.call(this, [attrs]);
+  validateAttrs.call(this, [selectionAttrs]);
 
-  var selectionAttrs = selection(attrs);
+  selectionAttrs = selection(selectionAttrs);
   return exec('DELETE FROM ' + this.tableName + ' ' + selectionAttrs).then(function(res) {
     return res;
   });
 };
 
-var find = function(attrs, projectionAttrs) {
-  attrs = attrs || {};
+var find = function(selectionAttrs, projectionAttrs) {
+  selectionAttrs = selectionAttrs || {};
   projectionAttrs = projectionAttrs || [];
 
-  validateAttrs.call(this, [attrs, projectionAttrs]);
+  validateAttrs.call(this, [selectionAttrs, projectionAttrs]);
 
-  var selectionAttrs = selection(attrs);
+  selectionAttrs = selection(selectionAttrs);
   projectionAttrs = projection(projectionAttrs);
   return all('SELECT ' + projectionAttrs + ' FROM ' + this.tableName + ' ' + selectionAttrs).then(function(models) {
     return (models.length > 0 ? models[0] : undefined);
   });
 };
 
-var findAll = function(projectionAttrs) {
-  projectionAttrs = projectionAttrs || [];
+var findAll = function(attrs, projectionAttrs) {
+  /**
+  * query for all without selection, or use projectionAttrs if present
+  */
+  if(attrs === undefined || attrs === null || Array.isArray(attrs)) {
+    projectionAttrs = attrs || [];
 
-  validateAttrs.call(this, [projectionAttrs]);
+    validateAttrs.call(this, [projectionAttrs]);
+    projectionAttrs = projection(projectionAttrs);
 
-  projectionAttrs = projection(projectionAttrs);
-  return all('SELECT ' + projectionAttrs + ' FROM ' + this.tableName).then(function(models) {
-    return models;
-  });
+    return all('SELECT ' + projectionAttrs + ' FROM ' + this.tableName).then(function(models) {
+      return models;
+    });
+
+  /**
+  * query for all with selection, and use projectionAttrs if present
+  */
+  } else {
+    attrs = attrs || {};
+    projectionAttrs = projectionAttrs || [];
+
+    validateAttrs.call(this, [attrs, projectionAttrs]);
+    var selectionAttrs = selection(attrs);
+    projectionAttrs = projection(projectionAttrs);
+
+    return all('SELECT ' + projectionAttrs + ' FROM ' + this.tableName + ' ' + selectionAttrs).then(function(models) {
+      return models;
+    });
+  }
 };
 
 var update = function(attrs, updatingAttrs) {

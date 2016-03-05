@@ -4,6 +4,7 @@ var express = require('express')
   , app = express()
   , DockerRemote = require('../services/docker_remote')
   , Container = require('../models/container')
+  , MemoryStats = require('../models/memory_stats')
   , appConfig = require('../config/application')
   , path = require('path');
 
@@ -20,6 +21,14 @@ app.get('/api/v1/info', function(req, res){
 app.get('/api/v1/containers', function(req, res){
   Container().findAll().then(function(containers){
     res.json(containers);
+  }).catch(function(err) {
+    res.send(err);
+  });
+});
+
+app.get('/api/v1/containers/:container_name/memory_stats', function(req, res) {
+  MemoryStats().findAll({container_name: req.params.container_name}).then(function(memoryStats) {
+    res.json(memoryStats);
   }).catch(function(err) {
     res.send(err);
   });
