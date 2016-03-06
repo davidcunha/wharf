@@ -5,6 +5,9 @@ logs
 # Build
 build
 
+# Documentation
+doc
+
 # Runtime data
 pids
 *.pid

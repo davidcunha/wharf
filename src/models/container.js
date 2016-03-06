@@ -5,6 +5,13 @@ module.exports = Container;
 var SQliteAdapter = require('./sqlite_adapter')
   , appConfig = require('../config/application');
 
+/**
+ * Creates an instance of Container.
+ *
+ * @constructor
+ * @this {Container}
+ * @return {Container} The new Container object.
+ */
 function Container() {
   var container = SQliteAdapter({modelName: 'Container',
                                 tableName: 'containers',
@@ -15,15 +22,23 @@ function Container() {
   return container;
 }
 
+/**
+ * Updates the existing containers list: add new containers, delete old ones.
+ *
+ * @this {Container}
+ * @param {Array} containersFromDocker - containers list from Docker.
+ * @return {Array} containers - updated containers list.
+ */
 var updateContainersList = function(containersFromDocker) {
-  if(Array.isArray(containersFromDocker) && containersFromDocker.length > 0) {
+  var containers = containersFromDocker;
+
+  if(Array.isArray(containers) && containers.length > 0) {
     return this.findAll(['container_name']).then(function(containersFromDB) {
       containersFromDB = containersFromDB.map(function(container) {
         return container.container_name;
       });
 
-      // refresh containers in database: add new containers, delete old ones
-      containersFromDocker.forEach(function(container) {
+      containers.forEach(function(container) {
         if(containersFromDB.indexOf(container.Id) < 0) {
           appConfig.logger.info('add container: ' + container.Id);
           this.create({container_name: container.Id,
@@ -37,11 +52,11 @@ var updateContainersList = function(containersFromDocker) {
       }, this);
 
       containersFromDB.forEach(function(containerID) {
-        var containersFromDockerIDs = containersFromDocker.map(function(container) {
+        var containersIDs = containers.map(function(container) {
           return container.Id;
         });
 
-        if(containersFromDockerIDs.indexOf(containerID) < 0) {
+        if(containersIDs.indexOf(containerID) < 0) {
           appConfig.logger.info('delete container: ' + containerID);
           this.delete({container_name: containerID}).then(function(res) {
             return res;
@@ -51,11 +66,11 @@ var updateContainersList = function(containersFromDocker) {
         }
       }, this);
 
-      return containersFromDocker;
+      return containers;
     }).catch(function(err) {
       appConfig.logger.error(err.stack);
     });
   } else {
-    return containersFromDocker;
+    return containers;
   }
 };

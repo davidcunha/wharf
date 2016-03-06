@@ -11,8 +11,17 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-notify');
   grunt.loadNpmTasks('grunt-exec');
+  grunt.loadNpmTasks('grunt-jsdoc');
 
   grunt.initConfig({
+    jsdoc : {
+      dist : {
+        src: ['./src/models/*.js'],
+        options: {
+          destination: 'doc'
+        }
+      }
+    },
     notify: {
       server: {
         options: {
