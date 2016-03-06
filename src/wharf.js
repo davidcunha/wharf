@@ -1,6 +1,6 @@
 'use strict';
 
-var ClusterManager = require('./utils/cluster_manager');
+var StatsClusterManager = require('./utils/stats_cluster_manager');
 require('./controllers/containers_controller');
 
-module.exports = ClusterManager.start();
+module.exports = StatsClusterManager.start();

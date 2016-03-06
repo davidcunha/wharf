@@ -3,9 +3,9 @@
 var cluster = require('cluster')
   , StatsWorkerMapper = require('../models/stats_worker_mapper');
 
-var ClusterManager = function() {};
+var StatsClusterManager = function() {};
 
-ClusterManager.prototype.start = function(options) {
+StatsClusterManager.prototype.start = function(options) {
   options = options || {};
 
   if (cluster.isMaster) {
@@ -18,8 +18,8 @@ ClusterManager.prototype.start = function(options) {
 module.exports = (function() {
   var instance;
   function createInstance() {
-    var clusterManager = new ClusterManager();
-    return clusterManager;
+    var statsClusterManager = new StatsClusterManager();
+    return statsClusterManager;
   }
 
   function getInstance() {
