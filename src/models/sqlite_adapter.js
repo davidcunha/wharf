@@ -56,16 +56,16 @@ var find = function(selectionAttrs, projectionAttrs) {
 
   selectionAttrs = selection(selectionAttrs);
   projectionAttrs = projection(projectionAttrs);
-  return all('SELECT ' + projectionAttrs + ' FROM ' + this.tableName + ' ' + selectionAttrs).then(function(models) {
-    return (models.length > 0 ? models[0] : undefined);
+  return all('SELECT ' + projectionAttrs + ' FROM ' + this.tableName + ' ' + selectionAttrs + ' LIMIT 1').then(function(model) {
+    return model;
   });
 };
 
 var findAll = function(attrs, projectionAttrs) {
   /**
-  * query for all without selection, or use projectionAttrs if present
+  * query for all without selection, or use projection if sent as first parameter
   */
-  if(attrs === undefined || attrs === null || Array.isArray(attrs)) {
+  if((attrs === undefined || attrs === null) || Array.isArray(attrs)) {
     projectionAttrs = attrs || [];
 
     validateAttrs.call(this, [projectionAttrs]);
@@ -149,7 +149,23 @@ function insertion(attrs) {
 
 function selection(selectionAttrs) {
   selectionAttrs = Object.keys(selectionAttrs).map(function(attr) {
-    return (attr + ' = ' + '\'' + selectionAttrs[attr] + '\'');
+    // attribute is an SQL operator
+    if(selectionAttrs[attr] instanceof Object) {
+      var operator = Object.keys(selectionAttrs[attr])[0];
+      var operatorPredicate = selectionAttrs[attr][operator];
+
+      if(Array.isArray(operatorPredicate)) {
+        if(operator === 'between') {
+          return (attr + ' BETWEEN ' + '\'' + operatorPredicate[0] + '\'' +
+                            ' AND ' + '\'' + operatorPredicate[1] + '\'');
+        }
+      } else {
+        return (attr + ' ' + operator + ' \'' + selectionAttrs[attr] + '\'');
+      }
+
+    } else {
+      return (attr + ' = ' + '\'' + selectionAttrs[attr] + '\'');
+    }
   }).join(' AND ');
   return 'WHERE ' + selectionAttrs;
 }

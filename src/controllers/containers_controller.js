@@ -27,11 +27,19 @@ app.get('/api/v1/containers', function(req, res){
 });
 
 app.get('/api/v1/containers/:container_name/memory_stats', function(req, res) {
-  MemoryStats().findAll({container_name: req.params.container_name}).then(function(memoryStats) {
-    res.json(memoryStats);
-  }).catch(function(err) {
-    res.send(err);
-  });
+  var validation = validateRequest(req, {params: ['container_name'], query: ['filter', 'ud']});
+
+  if(validation.errors.length > 0) {
+    res.status(400).send({errors: validation.errors});
+  } else {
+    MemoryStats().findAll({container_name: req.params.container_name},
+                      {filter: req.query.filter, ud: req.query.ud}).then(function(memoryStats) {
+      res.json(memoryStats);
+    }).catch(function(err) {
+      res.send(err);
+    });
+  }
+
 });
 
 app.get('/api/v1/containers/:id/stats', function(req, res){
@@ -52,3 +60,25 @@ app.get('/api/v1/containers/:id/processes', function(req, res){
 
 app.listen(3000);
 appConfig.logger.info('Wharf listening on port 3000');
+
+function validateRequest(req, requiredParams) {
+  var validation = {errors: []};
+
+  Object.keys(requiredParams).every(function(rootParam) {
+    if(req.hasOwnProperty[rootParam] === false) {
+      validation.errors.push('missing parameter ' + rootParam);
+      return false;
+    } else {
+      return requiredParams[rootParam].every(function(param) {
+        if(Object.keys(req[rootParam]).indexOf(param) < 0) {
+          validation.errors.push('missing parameter ' + param);
+          return false;
+        } else {
+          return true;
+        }
+      });
+    }
+  });
+
+  return validation;
+}
