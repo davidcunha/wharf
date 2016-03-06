@@ -46,7 +46,7 @@ var fetchJob = function() {
       return MemoryStats().find({container_name: containerID}).then(function(memoryStatsFromDB) {
         return memoryStatsFromDB;
       }).then(function(memoryStatsFromDB) {
-        var updatedMemoryStats = setStatSample(memoryStatFromDocker, memoryStatsFromDB);
+        var updatedMemoryStats = updateStatSample(memoryStatFromDocker, memoryStatsFromDB);
 
         return MemoryStats().update({container_name: containerID}, updatedMemoryStats, function(res) {
           return res;
@@ -58,7 +58,7 @@ var fetchJob = function() {
   });
 };
 
-function setStatSample(statFromDocker, statsFromDB) {
+function updateStatSample(statFromDocker, statsFromDB) {
   var hour = moment.utc().hour();
   var minute = moment.utc().minute();
 
