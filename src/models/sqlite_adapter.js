@@ -7,6 +7,18 @@ var sqlite3 = require('sqlite3').verbose()
   , db = new sqlite3.cached.Database('./db/' + appConfig.database + '.sqlite')
   , Q = require('q');
 
+/**
+ * SQliteAdapter.
+ * ORM for SQlite3.
+ * Used by delegation from all models that maps to a SQL table.
+ *
+ * @Function
+ * @this {SQliteAdapter}
+ * @return {SQliteAdapter} The new SQliteAdapter object
+ * @throws {Error} Will throw an error if modelName is undefined
+ * @throws {Error} Will throw an error if tableName is undefined
+ * @throws {Error} Will throw an error if schemaAttrs is undefined
+ */
 function SQliteAdapter(options) {
   options = options || {};
   if(!options.modelName) { throw new Error('\'modelName\' is undefined'); }
@@ -26,86 +38,128 @@ function SQliteAdapter(options) {
   };
 }
 
-var create = function create(insertionAttrs) {
-  insertionAttrs = insertionAttrs || {};
+/**
+ * Creates a new model.
+ *
+ * @this {SQliteAdapter}
+ * @param {Object} insertAttrs - insert attributes for model
+ * @return {Promise} A promise to the create result
+ */
+var create = function create(insertAttrs) {
+  insertAttrs = insertAttrs || {};
 
-  validateAttrs.call(this, [insertionAttrs]);
+  validateAttrs.call(this, [insertAttrs]);
 
-  insertionAttrs = insertion(insertionAttrs);
-  return exec('INSERT INTO ' + this.tableName + ' ' + insertionAttrs).then(function(res) {
+  var insertStmt = insertStatement(insertAttrs);
+  return exec('INSERT INTO ' + this.tableName + ' ' + insertStmt).then(function(res) {
     return res;
   });
 };
 
-var destroy = function(selectionAttrs) {
-  selectionAttrs = selectionAttrs || {};
+/**
+ * Destroy a model.
+ *
+ * @this {SQliteAdapter}
+ * @param {Object} selectAttrs - select attributes for model
+ * @return {Promise} A promise to the destroy result
+ */
+var destroy = function(selectAttrs) {
+  selectAttrs = selectAttrs || {};
 
-  validateAttrs.call(this, [selectionAttrs]);
+  validateAttrs.call(this, [selectAttrs]);
 
-  selectionAttrs = selection(selectionAttrs);
-  return exec('DELETE FROM ' + this.tableName + ' ' + selectionAttrs).then(function(res) {
+  var selectStmt = selectStatement(selectAttrs);
+  return exec('DELETE FROM ' + this.tableName + ' ' + selectStmt).then(function(res) {
     return res;
   });
 };
 
-var find = function(selectionAttrs, projectionAttrs) {
-  selectionAttrs = selectionAttrs || {};
+/**
+ * Find a model.
+ *
+ * @this {SQliteAdapter}
+ * @param {Object} - select attributes for model
+ * @param {Array|undefined} - projection attributes for model or an empty parameter
+ * @return {Promise} A promise to the find result
+ */
+var find = function(selectAttrs, projectionAttrs) {
+  selectAttrs = selectAttrs || {};
   projectionAttrs = projectionAttrs || [];
 
-  validateAttrs.call(this, [selectionAttrs, projectionAttrs]);
+  validateAttrs.call(this, [selectAttrs, projectionAttrs]);
 
-  selectionAttrs = selection(selectionAttrs);
-  projectionAttrs = projection(projectionAttrs);
-  return all('SELECT ' + projectionAttrs + ' FROM ' + this.tableName + ' ' + selectionAttrs + ' LIMIT 1').then(function(model) {
+  var selectStmt = selectStatement(selectAttrs);
+  var projectionStmt = projectionStatement(projectionAttrs);
+  return all('SELECT ' + projectionStmt + ' FROM ' + this.tableName + ' ' + selectStmt + ' LIMIT 1').then(function(model) {
     return model;
   });
 };
 
+/**
+ * Find all models.
+ *
+ * @this {SQliteAdapter}
+ * @param {Object|Array} - select or projection attributes for models
+ * @param {Array|null} - projection attributes for models or empty parameter
+ * @return {Promise} A promise to the findAll result
+ */
 var findAll = function(attrs, projectionAttrs) {
   /**
-  * query for all without selection, or use projection if sent as first parameter
-  */
+   * Query for all without selection, or use projection if sent as first parameter
+   */
   if((attrs === undefined || attrs === null) || Array.isArray(attrs)) {
     projectionAttrs = attrs || [];
 
     validateAttrs.call(this, [projectionAttrs]);
-    projectionAttrs = projection(projectionAttrs);
 
-    return all('SELECT ' + projectionAttrs + ' FROM ' + this.tableName).then(function(models) {
+    return all('SELECT ' + projectionStatement(projectionAttrs) + ' FROM ' + this.tableName).then(function(models) {
       return models;
     });
 
   /**
-  * query for all with selection, and use projectionAttrs if present
-  */
+   * Query for all with selection, and use projectionAttrs if present
+   */
   } else {
     attrs = attrs || {};
     projectionAttrs = projectionAttrs || [];
 
     validateAttrs.call(this, [attrs, projectionAttrs]);
-    var selectionAttrs = selection(attrs);
-    projectionAttrs = projection(projectionAttrs);
+    var selectStmt = selectStatement(attrs);
 
-    return all('SELECT ' + projectionAttrs + ' FROM ' + this.tableName + ' ' + selectionAttrs).then(function(models) {
+    return all('SELECT ' + projectionStatement(projectionAttrs) + ' FROM ' + this.tableName + ' ' + selectStmt).then(function(models) {
       return models;
     });
   }
 };
 
-var update = function(attrs, updatingAttrs) {
-  attrs = attrs || {};
-  updatingAttrs = updatingAttrs || {};
+/**
+ * Updates model.
+ *
+ * @this {SQliteAdapter}
+ * @param {Object} selectAttrs - select attributes for model
+ * @param {Object} updateAttrs - update attributes for model
+ * @return {Promise} A promise to the update result
+ */
+var update = function(selectAttrs, updateAttrs) {
+  selectAttrs = selectAttrs || {};
+  updateAttrs = updateAttrs || {};
 
-  validateAttrs.call(this, [attrs, updatingAttrs]);
+  validateAttrs.call(this, [selectAttrs, updateAttrs]);
 
-  updatingAttrs = updating(attrs, updatingAttrs);
-  return exec('UPDATE ' + this.tableName + ' SET ' + updatingAttrs).then(function(res) {
+  var updateSmt = updateStatement(selectAttrs, updateAttrs);
+  return exec('UPDATE ' + this.tableName + ' SET ' + updateSmt).then(function(res) {
     return res;
   });
 };
 
-// helper functions
-
+/**
+* Validates attributes to be used in SQL query.
+*
+* @private
+* @this {SQliteAdapter}
+* @param {Object} attrs - attributes to be validated
+* @throws {Error} Will throw an error if attributes are invalid
+*/
 var validateAttrs = function(attrs) {
   var valid = false;
   var invalidAttrs;
@@ -128,7 +182,14 @@ var validateAttrs = function(attrs) {
   }
 };
 
-function projection(projectionAttrs) {
+/**
+* Creates projection statement for SQL query.
+*
+* @private
+* @param {Array} projectionAttrs - projection attributes for query
+* @return {String} Projection statement
+*/
+function projectionStatement(projectionAttrs) {
   projectionAttrs = projectionAttrs || [];
   if(projectionAttrs.length > 0) {
     return projectionAttrs.join(',');
@@ -137,22 +198,36 @@ function projection(projectionAttrs) {
   }
 }
 
-function insertion(attrs) {
+/**
+* Creates insertion statement for SQL query.
+*
+* @private
+* @param {Object} insertAttrs - insert attributes for query
+* @return {String} Insertion string
+*/
+function insertStatement(insertAttrs) {
   var columns = [];
   var values  = [];
-  Object.keys(attrs).forEach(function(attr) {
+  Object.keys(insertAttrs).forEach(function(attr) {
     columns.push(attr);
-    values.push(attrs[attr]);
+    values.push(insertAttrs[attr]);
   });
   return '(' + columns.join(',') + ') VALUES (\'' + values.join('\',\'') + '\')';
 }
 
-function selection(selectionAttrs) {
-  selectionAttrs = Object.keys(selectionAttrs).map(function(attr) {
+/**
+* Creates select statement for SQL query.
+*
+* @private
+* @param {Object} selectAttrs - select attributes for query
+* @return {String} Select statement
+*/
+function selectStatement(selectAttrs) {
+  selectAttrs = Object.keys(selectAttrs).map(function(attr) {
     // attribute is an SQL operator
-    if(selectionAttrs[attr] instanceof Object) {
-      var operator = Object.keys(selectionAttrs[attr])[0];
-      var operatorPredicate = selectionAttrs[attr][operator];
+    if(selectAttrs[attr] instanceof Object) {
+      var operator = Object.keys(selectAttrs[attr])[0];
+      var operatorPredicate = selectAttrs[attr][operator];
 
       if(Array.isArray(operatorPredicate)) {
         if(operator === 'between') {
@@ -160,24 +235,39 @@ function selection(selectionAttrs) {
                             ' AND ' + '\'' + operatorPredicate[1] + '\'');
         }
       } else {
-        return (attr + ' ' + operator + ' \'' + selectionAttrs[attr] + '\'');
+        return (attr + ' ' + operator + ' \'' + selectAttrs[attr] + '\'');
       }
 
     } else {
-      return (attr + ' = ' + '\'' + selectionAttrs[attr] + '\'');
+      return (attr + ' = ' + '\'' + selectAttrs[attr] + '\'');
     }
   }).join(' AND ');
-  return 'WHERE ' + selectionAttrs;
+  return 'WHERE ' + selectAttrs;
 }
 
-function updating(selectionAttrs, updatingAttrs) {
-  selectionAttrs = selection(selectionAttrs);
-  updatingAttrs = Object.keys(updatingAttrs).map(function(attr) {
-    return (attr + ' = ' + '\'' + updatingAttrs[attr] + '\'');
+/**
+* Creates update statement for SQL query.
+*
+* @private
+* @param {Object} selectAttrs - select attributes for query
+* @param {Object} updateAttrs - update attributes for query
+* @return {String} Update statament
+*/
+function updateStatement(selectAttrs, updateAttrs) {
+  selectAttrs = selectStatement(selectAttrs);
+  updateAttrs = Object.keys(updateAttrs).map(function(attr) {
+    return (attr + ' = ' + '\'' + updateAttrs[attr] + '\'');
   }).join(',');
-  return updatingAttrs + ' ' + selectionAttrs;
+  return updateAttrs + ' ' + selectAttrs;
 }
 
+/**
+* Runs query to get all result rows.
+*
+* @private
+* @param {String} query - query
+* @return {Promise} A promise to the all result
+*/
 function all(query) {
   return new Q.promise(function(resolve, reject) {
     db.serialize(function() {
@@ -190,6 +280,13 @@ function all(query) {
   });
 }
 
+/**
+* Runs query and no result rows are retrieved.
+*
+* @private
+* @param {String} query - query
+* @return {Promise} A promise to the exec result
+*/
 function exec(query) {
   return new Q.promise(function(resolve, reject) {
     db.serialize(function() {
@@ -202,8 +299,12 @@ function exec(query) {
   });
 }
 
-// DB management functions
-
+/**
+* Creates database.
+*
+* @private
+* @return {Promise} A promise to the createDB result
+*/
 SQliteAdapter.createDB = function() {
   var schema = appConfig.schema;
   return exec(schema).then(function(res) {
@@ -213,6 +314,12 @@ SQliteAdapter.createDB = function() {
   });
 };
 
+/**
+* Deletes database.
+*
+* @private
+* @return {Promise} A promise to the deleteDB result.
+*/
 SQliteAdapter.deleteDB = function() {
   return all('SELECT name FROM sqlite_master WHERE type=\'table\'').then(function(tables) {
     return tables.filter(function(table) {

@@ -5,6 +5,15 @@ module.exports = MemoryStats;
 var SQliteAdapter = require('./sqlite_adapter')
   , StatsFilters = require('./stats_filters');
 
+/**
+ * MemoryStats
+ * Represents the memory stats from a Docker container.
+ * Delegates ORM properties to SQliteAdapter @see {@link SQliteAdapter}.
+ *
+ * @Function
+ * @this {MemoryStats}
+ * @return {MemoryStats} The new MemoryStats object
+ */
 function MemoryStats() {
   var schemaAttrs = ['container_name', 'timestamp_day'];
   prePopulateTimestampForDay(schemaAttrs);
@@ -15,8 +24,10 @@ function MemoryStats() {
                                   associations: {belongsTo: 'containers'}});
 
   /**
-  * Override find from SQliteAdapter to apply UI filters
-  */
+   * Finds all memory stats applying filters @see {@link findAll} @see {@link SQliteAdapter}
+   *
+   * @override
+   */
   var findAll = memoryStats.findAll;
   memoryStats.findAll = function(selectionAttrs, projectionAttrs, filter) {
     if(Array.isArray(projectionAttrs) === false && (projectionAttrs !== undefined || projectionAttrs !== null)) {
@@ -40,6 +51,11 @@ function MemoryStats() {
   return memoryStats;
 }
 
+/**
+ * Populates model schema attributes with 24 columns: hour_0, hour_1, ... hour_23.
+ *
+ * @param {Array} schemaAttrs - model schema attributes
+ */
 function prePopulateTimestampForDay(schemaAttrs) {
   for(var i = 0; i < 24; i++) {
     schemaAttrs.push('hour_' + i);

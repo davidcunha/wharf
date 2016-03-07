@@ -6,11 +6,13 @@ var SQliteAdapter = require('./sqlite_adapter')
   , appConfig = require('../config/application');
 
 /**
- * Creates an instance of Container.
+ * Container
+ * Represents a Docker container.
+ * Delegates ORM properties to SQliteAdapter @see {@link SQliteAdapter}.
  *
- * @constructor
+ * @Function
  * @this {Container}
- * @return {Container} The new Container object.
+ * @return {Container} The new Container object
  */
 function Container() {
   var container = SQliteAdapter({modelName: 'Container',
@@ -26,8 +28,8 @@ function Container() {
  * Updates the existing containers list: add new containers, delete old ones.
  *
  * @this {Container}
- * @param {Array} containersFromDocker - containers list from Docker.
- * @return {Array} containers - updated containers list.
+ * @param {Array} containersFromDocker - containers list from Docker
+ * @return {Array} containers - updated containers list
  */
 var updateContainersList = function(containersFromDocker) {
   var containers = containersFromDocker;
