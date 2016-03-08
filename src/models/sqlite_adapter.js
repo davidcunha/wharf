@@ -105,7 +105,8 @@ var find = function(selectAttrs, projectionAttrs) {
  */
 var findAll = function(attrs, projectionAttrs) {
   /**
-   * Query for all without selection, or use projection if sent as first parameter
+   * Query for all without selection
+   * Or use projectionAttrs if sent as first parameter
    */
   if((attrs === undefined || attrs === null) || Array.isArray(attrs)) {
     projectionAttrs = attrs || [];
@@ -117,7 +118,8 @@ var findAll = function(attrs, projectionAttrs) {
     });
 
   /**
-   * Query for all with selection, and use projectionAttrs if present
+   * Query for all with selection
+   * And use projectionAttrs if present
    */
   } else {
     attrs = attrs || {};
@@ -199,11 +201,11 @@ function projectionStatement(projectionAttrs) {
 }
 
 /**
-* Creates insertion statement for SQL query.
+* Creates insert statement for SQL query.
 *
 * @private
 * @param {Object} insertAttrs - insert attributes for query
-* @return {String} Insertion string
+* @return {String} Insert statement
 */
 function insertStatement(insertAttrs) {
   var columns = [];
@@ -318,7 +320,7 @@ SQliteAdapter.createDB = function() {
 * Deletes database.
 *
 * @private
-* @return {Promise} A promise to the deleteDB result.
+* @return {Promise} A promise to the deleteDB result
 */
 SQliteAdapter.deleteDB = function() {
   return all('SELECT name FROM sqlite_master WHERE type=\'table\'').then(function(tables) {

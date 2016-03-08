@@ -54,6 +54,7 @@ function MemoryStats() {
 /**
  * Populates model schema attributes with 24 columns: hour_0, hour_1, ... hour_23.
  *
+ * @private
  * @param {Array} schemaAttrs - model schema attributes
  */
 function prePopulateTimestampForDay(schemaAttrs) {

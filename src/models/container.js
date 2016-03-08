@@ -27,6 +27,7 @@ function Container() {
 /**
  * Updates the existing containers list: add new containers, delete old ones.
  *
+ * @private
  * @this {Container}
  * @param {Array} containersFromDocker - containers list from Docker
  * @return {Array} containers - updated containers list
