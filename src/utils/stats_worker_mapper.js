@@ -3,7 +3,7 @@
 module.exports = StatsWorkerMapper;
 
 var StatsWorker = require('./stats_worker')
-  , Container = require('./container')
+  , Container = require('../models/container')
   , DockerRemote = require('../services/docker_remote')
   , appConfig = require('../config/application');
 

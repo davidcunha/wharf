@@ -2,7 +2,7 @@
 
 module.exports = StatsWorker;
 
-var MemoryStats = require('./memory_stats')
+var MemoryStats = require('../models/memory_stats')
   , DockerRemote = require('../services/docker_remote')
   , appConfig = require('../config/application')
   , moment = require('moment');

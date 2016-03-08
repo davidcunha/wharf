@@ -1,7 +1,7 @@
 'use strict';
 
 var cluster = require('cluster')
-  , StatsWorkerMapper = require('../models/stats_worker_mapper');
+  , StatsWorkerMapper = require('./stats_worker_mapper');
 
 var StatsClusterManager = function() {};
 

@@ -3,7 +3,7 @@
 module.exports = MemoryStats;
 
 var SQliteAdapter = require('./sqlite_adapter')
-  , StatsFilters = require('./stats_filters');
+  , StatsFilters = require('../utils/stats_filters');
 
 /**
  * MemoryStats
