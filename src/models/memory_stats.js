@@ -33,11 +33,12 @@ function MemoryStats() {
     if(Array.isArray(projectionAttrs) === false && (projectionAttrs !== undefined || projectionAttrs !== null)) {
       filter = projectionAttrs;
 
-      StatsFilters().applyPreFilter(filter, selectionAttrs);
+      StatsFilters(filter).applyBeforeFilter(selectionAttrs);
 
       return findAll.call(this, selectionAttrs).then(function(stats) {
-        return stats;
+        return StatsFilters(filter).applyAfterFilter(stats);
       });
+      
     } else {
       if(filter !== undefined || filter !== null) {
         // TODO filter data before call

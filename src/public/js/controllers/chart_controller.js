@@ -2,17 +2,19 @@
 
 module.exports = ChartController;
 
-function ChartController($scope) {
+var moment = require('moment');
+
+function ChartController($scope, Stats) {
   var chartsType = $scope.$parent.chartsType;
 
   if(chartsType === undefined || chartsType === null) {
-    throw new Error('Dashboard chartsType is empty or does not exists');
+    throw new Error('chartsType is empty or does not exists');
   }
 
   /**
-   * There is one chart per metric
-   * This will associate each chart type with a controller,
-   * if type is not already associated
+   * There is one chart per stats type
+   * This will associate each chart type with a chart controller,
+   * if type was not already associated
   */
   chartsType.every(function(chart, index) {
     if(chart.enabled === false) {
@@ -23,9 +25,31 @@ function ChartController($scope) {
     return true;
   });
 
+  var uDate = moment().format();
+  console.log(uDate);
+
+  /**
+   * Initialize stats based on chart type
+   * Fetch stats data
+  */
+  Stats.query($scope.type, {container_name: $scope.$parent.selectedContainerName, filter: 'lastHour', ud: uDate}).then(function(statsData) {
+    console.log(statsData);
+  }).catch(function(err) {
+    console.log(err);
+  });
+
+  var labels = [];
+  var values = [];
+  for(var i=0; i < 60; i++) {
+    labels[i] = i;
+    values[i] = Math.floor(Math.random() * (60 - 5));
+  }
+
+
+
   $scope.dataSource = function() {
     return {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      labels: labels,
       datasets: [
         {
           label: 'My First dataset',
@@ -35,7 +59,7 @@ function ChartController($scope) {
           pointStrokeColor: '#fff',
           pointHighlightFill: '#fff',
           pointHighlightStroke: 'rgba(220,220,220,1)',
-          data: [65, 59, 80, 81, 56, 55, 40]
+          data: values
         }
       ]
     };

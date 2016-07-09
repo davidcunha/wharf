@@ -65,7 +65,7 @@ function validateRequest(req, requiredParams) {
   var validation = {errors: []};
 
   Object.keys(requiredParams).every(function(rootParam) {
-    if(req.hasOwnProperty[rootParam] === false) {
+    if(rootParam in req === false) {
       validation.errors.push('missing parameter ' + rootParam);
       return false;
     } else {

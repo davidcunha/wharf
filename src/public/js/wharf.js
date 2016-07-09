@@ -6,7 +6,7 @@ var angular = require('angular')
   , DashboardController = require('./controllers/dashboard_controller')
   , ChartDirective = require('./directives/chart_directive')
   , Container = require('./factories/container')
-  , MemoryStats = require('./factories/memory_stats');
+  , Stats = require('./factories/stats');
 
 require('angular-ui-router');
 require('angular-resource');
@@ -41,12 +41,12 @@ angular.module('wharf').config(function($stateProvider, $urlRouterProvider) {
 
 angular.module('wharf.factories', []);
 angular.module('wharf.factories').factory('Container', ['$resource', Container]);
-angular.module('wharf.factories').factory('MemoryStats', ['$resource', MemoryStats]);
+angular.module('wharf.factories').factory('Stats', ['$resource', Stats]);
 
 angular.module('wharf.directives', []);
 angular.module('wharf.directives').directive('chart', [ChartDirective]);
 
 angular.module('wharf.controllers', []);
-angular.module('wharf.controllers').controller('DashboardController', ['$scope', DashboardController]);
+angular.module('wharf.controllers').controller('DashboardController', ['$scope', 'Container', DashboardController]);
 angular.module('wharf.controllers').controller('FiltersController', ['$scope', FiltersController]);
-angular.module('wharf.controllers').controller('ChartController', ['$scope', ChartController]);
+angular.module('wharf.controllers').controller('ChartController', ['$scope', 'Stats', ChartController]);
