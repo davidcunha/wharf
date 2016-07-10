@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function(grunt) {
+  grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha-test');
@@ -9,38 +10,36 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-notify');
-  grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-jsdoc');
 
   grunt.initConfig({
+    babel: {
+      options: {
+        sourceMap: true,
+        presets: ['es2015']
+      },
+      dist: {
+        files: [{
+          expand: true,
+          src: ['./index.js', './src/wharf.js',
+                './src/config/**/*.js', './src/controllers/*.js', './src/models/*.js',
+                './src/services/*.js', './src/utils/*.js', './test/**/*.js'],
+          dest: 'dist',
+        }]
+      }
+    },
     jsdoc : {
       dist : {
-        src: ['./src/models/*.js'],
+        src: ['./src/**/*.js'],
         options: {
           destination: 'doc'
-        }
-      }
-    },
-    notify: {
-      server: {
-        options: {
-          message: 'App ready!'
-        }
-      }
-    },
-    exec: {
-      app: {
-        cmd: function() {
-          process.env.MODE = 'desktop';
-          return 'electron index.js & grunt watch';
         }
       }
     },
     express: {
       dev: {
         options: {
-          script: 'index.js'
+          script: 'dist/index.js'
         }
       }
     },
@@ -54,18 +53,18 @@ module.exports = function(grunt) {
     watch: {
       express: {
         files:  ['<%= jshint.files %>'],
-        tasks:  ['express:dev', 'jshint', 'notify:server'],
+        tasks:  ['babel', 'express:dev', 'jshint'],
         options: {
           spawn: false
         }
       },
       test: {
         files: './test/**/*.js',
-        tasks: ['test', 'notify:test']
+        tasks: ['test']
       },
       css: {
         files: './src/public/css/**/*.scss',
-        tasks: ['sass', 'cssmin', 'notify:server']
+        tasks: ['sass', 'cssmin']
       },
       js: {
         files: './src/public/js/**/*.js',
@@ -121,7 +120,7 @@ module.exports = function(grunt) {
           reporter: 'spec',
           clearRequireCache: true
         },
-        src: ['./test/**/*.js']
+        src: ['./dist/test/**/*.js']
       }
     }
   });
@@ -136,7 +135,6 @@ module.exports = function(grunt) {
     process.env.APP_ENV = 'test';
   });
 
-  grunt.registerTask('default', ['env:dev', 'express:dev', 'jshint', 'watch']);
-  grunt.registerTask('desktop', ['env:dev', 'express:dev', 'exec:app']);
-  grunt.registerTask('test', ['env:test', 'mochaTest', 'notify:test']);
+  grunt.registerTask('default', ['env:dev', 'babel', 'express:dev', 'jshint', 'watch']);
+  grunt.registerTask('test', ['env:test', 'babel', 'mochaTest']);
 };

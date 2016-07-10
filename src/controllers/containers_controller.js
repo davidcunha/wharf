@@ -1,84 +1,73 @@
 'use strict';
+import DockerRemote from '../services/docker_remote';
+import Container from '../models/container';
+import MemoryStats from '../models/memory_stats';
 
-var express = require('express')
-  , app = express()
-  , DockerRemote = require('../services/docker_remote')
-  , Container = require('../models/container')
-  , MemoryStats = require('../models/memory_stats')
-  , appConfig = require('../config/application')
-  , path = require('path');
-
-app.use(express.static(path.resolve(__dirname + '/../public')));
-
-app.get('/api/v1/info', function(req, res){
-  DockerRemote.info().then(function(info){
-    res.json(info);
-  }).catch(function(err) {
-    res.send(err);
-  });
-});
-
-app.get('/api/v1/containers', function(req, res){
-  Container().findAll().then(function(containers){
-    res.json(containers);
-  }).catch(function(err) {
-    res.send(err);
-  });
-});
-
-app.get('/api/v1/containers/:container_name/memory_stats', function(req, res) {
-  var validation = validateRequest(req, {params: ['container_name'], query: ['filter', 'ud']});
-
-  if(validation.errors.length > 0) {
-    res.status(400).send({errors: validation.errors});
-  } else {
-    MemoryStats().findAll({container_name: req.params.container_name},
-                      {filter: req.query.filter, ud: req.query.ud}).then(function(memoryStats) {
-      res.json(memoryStats);
-    }).catch(function(err) {
-      res.send(err);
+const requestValidator = {
+  apply: function(target, thisArg, requiredParams) {
+    let req = target().req;
+    requiredParams = requiredParams[0];
+    Object.keys(requiredParams).forEach(function(requiredParam) {
+      if(requiredParam in req === false) {
+        throw new Error(`missing parameter: ${requiredParam}`);
+      } else {
+        requiredParams[requiredParam].forEach(function(param) {
+          if(Object.keys(req[requiredParam]).indexOf(param) < 0) {
+            throw new Error(`missing parameter: ${requiredParam}`);
+          }
+        });
+      }
     });
   }
+};
 
-});
-
-app.get('/api/v1/containers/:id/stats', function(req, res){
-  DockerRemote.stats(req.params.id).then(function(stats){
-    res.json(stats);
-  }).catch(function(err) {
-    res.send(err);
+function ContainersController(app) {
+  app.get('/api/v1/info', function(req, res){
+    DockerRemote.info().then(function(info){
+      res.json(info);
+    }).catch(function(err) {
+      res.status(500).send(err);
+    });
   });
-});
 
-app.get('/api/v1/containers/:id/processes', function(req, res){
-  DockerRemote.processes(req.params.id).then(function(processes){
-    res.json(processes);
-  }).catch(function(err) {
-    res.send(err);
+  app.get('/api/v1/containers', function(req, res){
+    Container().findAll().then(function(containers){
+      res.json(containers);
+    }).catch(function(err) {
+      res.status(500).send(err);
+    });
   });
-});
 
-app.listen(3000);
-appConfig.logger.info('Wharf listening on port 3000');
-
-function validateRequest(req, requiredParams) {
-  var validation = {errors: []};
-
-  Object.keys(requiredParams).every(function(rootParam) {
-    if(rootParam in req === false) {
-      validation.errors.push('missing parameter ' + rootParam);
-      return false;
-    } else {
-      return requiredParams[rootParam].every(function(param) {
-        if(Object.keys(req[rootParam]).indexOf(param) < 0) {
-          validation.errors.push('missing parameter ' + param);
-          return false;
-        } else {
-          return true;
-        }
+  app.get('/api/v1/containers/:container_name/memory_stats', function(req, res) {
+    try {
+      let validator = new Proxy(function() {return {req: req};}, requestValidator);
+      validator({params: ['container_name'], query: ['filter', 'ud']});
+      MemoryStats().findAll({container_name: req.params.container_name},
+                        {filter: req.query.filter, ud: req.query.ud}).then(function(memoryStats) {
+        res.json(memoryStats);
+      }).catch(function(err) {
+        res.status(500).send(err);
       });
+    } catch(e) {
+      res.status(400).send({error: e.message});
     }
   });
 
-  return validation;
+  app.get('/api/v1/containers/:id/stats', function(req, res){
+    DockerRemote.stats(req.params.id).then(function(stats){
+      res.json(stats);
+    }).catch(function(err) {
+      res.status(500).send(err);
+    });
+  });
+
+  app.get('/api/v1/containers/:id/processes', function(req, res){
+    DockerRemote.processes(req.params.id).then(function(processes){
+      res.json(processes);
+    }).catch(function(err) {
+      res.status(500).send(err);
+    });
+  });
 }
+
+export default ContainersController;

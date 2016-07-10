@@ -1,7 +1,8 @@
 'use strict';
 
-var winston = require('winston');
-var logger = new winston.Logger({
+const winston = require('winston');
+
+const logger = new winston.Logger({
   transports: [
     new winston.transports.Console({
       handleExceptions: true,
@@ -12,10 +13,11 @@ var logger = new winston.Logger({
   exitOnError: false
 });
 
-var Config = {
+const config = {
   database: 'test',
   workerInterval: 10000,
+  port: 3000,
   logger: logger
 };
 
-module.exports = Config;
+export default config;

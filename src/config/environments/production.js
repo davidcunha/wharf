@@ -1,7 +1,7 @@
 'use strict';
 
-var Config = {
+const config = {
   database: 'production'
 };
 
-module.exports = Config;
+export default config;

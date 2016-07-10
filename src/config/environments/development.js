@@ -1,9 +1,9 @@
 'use strict';
 
-var winston = require('winston')
-  , fs = require('fs');
+const winston = require('winston');
+const fs = require('fs');
 
-var logger = new winston.Logger({
+const logger = new winston.Logger({
   transports: [
     new winston.transports.Console({
       handleExceptions: true,
@@ -15,11 +15,12 @@ var logger = new winston.Logger({
   exitOnError: false
 });
 
-var Config = {
+const config = {
   database: 'development',
   workerInterval: 10000,
   logger: logger,
+  port: 3000,
   schema: fs.readFileSync('src/config/database/schema.sql', 'utf8')
 };
 
-module.exports = Config;
+export default config;
