@@ -13,19 +13,27 @@ import config from '../config/application';
  * @throws {Error} Will throw an error if there is a missing parameter
  */
 const requestValidator = {
-  apply: function(target, thisArg, [requiredParams]) {
-    let req = target().req;
-    Object.keys(requiredParams).forEach(function(requiredParam) {
-      if(requiredParam in req === false) {
-        throw new Error(`missing parameter: ${requiredParam}`);
-      } else {
-        requiredParams[requiredParam].forEach(function(param) {
-          if(Object.keys(req[requiredParam]).indexOf(param) < 0) {
-            throw new Error(`missing parameter: ${requiredParam}`);
+  apply: function(target, thisArg, [requiredParams] = {}) {
+    let requestParams = {
+      params: target().req.params,
+      query: target().req.query
+    };
+
+    if(Object.keys(requiredParams).length > 0) {
+      for(let requiredParam of Object.keys(requiredParams)) {
+        if(Object.keys(requestParams[requiredParam]).length > 0) {
+          for(let param of requiredParams[requiredParam]) {
+            if(Object.keys(requestParams[requiredParam]).indexOf(param) < 0) {
+              throw new Error(`missing parameter: ${param}`);
+            }
           }
-        });
+        } else {
+          throw new Error(`missing parameter: ${requiredParam}`);
+        }
       }
-    });
+    } else {
+      throw new Error('missing all required parameters');
+    }
   }
 };
 
@@ -40,7 +48,7 @@ const requestValidator = {
 function ContainersController(router) {
   /**
    * GET request /api/v1/info
-   * Returns information about Docker environment
+   * Information about Docker environment
    *
    * @param {String} route name
    * @param {Function} callback with request and response objects
@@ -58,7 +66,7 @@ function ContainersController(router) {
 
   /**
    * GET request /api/v1/containers
-   * Returns all available containers
+   * All available containers
    *
    * @param {String} route name
    * @param {Function} callback with request and response objects
@@ -76,7 +84,7 @@ function ContainersController(router) {
 
   /**
    * GET request /api/v1/containers/:container_name/memory_stats
-   * Returns memory statistics of a specific container
+   * Memory statistics from a specific container
    *
    * @param {String} route name
    * @param {Function} callback with request and response objects
@@ -103,7 +111,7 @@ function ContainersController(router) {
 
   /**
    * GET request /api/v1/containers/:id/stats
-   * Returns all statistics of a specific container
+   * All statistics from a specific container
    *
    * @param {String} route name
    * @param {Function} callback with request and response objects
@@ -121,7 +129,7 @@ function ContainersController(router) {
 
   /**
    * GET request /api/v1/containers/:id/processes
-   * Returns all processes running in a specific container
+   * All processes running in a specific container
    *
    * @param {String} route name
    * @param {Function} callback with request and response objects
