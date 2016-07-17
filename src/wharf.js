@@ -1,15 +1,23 @@
 'use strict';
 
 const express = require('express');
+const router = express.Router();
 const path = require('path');
-import appConfig from './config/application';
+import config from './config/application';
 import BaseCtrl from './controllers/base_controller';
 
 const app = express();
-app.use(express.static(path.resolve(__dirname + '/public')));
 
-const baseCtrl = BaseCtrl(app);
+router.use(function(req, res, next) {
+  config.logger.info(`Request: GET ${req.originalUrl} with ${JSON.stringify(req.params)}`);
+  next();
+});
+
+app.use(express.static(path.resolve(__dirname + '/public')));
+app.use(router);
+
+const baseCtrl = BaseCtrl(router);
 baseCtrl.registerCtrl('containers');
 
-app.listen(appConfig.port);
-appConfig.logger.info(`Listening on port ${appConfig.port}`);
+app.listen(config.port);
+config.logger.info(`Listening on port ${config.port}`);
